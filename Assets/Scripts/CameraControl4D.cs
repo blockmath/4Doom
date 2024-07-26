@@ -8,9 +8,10 @@ using UnityEngine;
 
 public class CameraControl4D : BasicCamera4D {
     public const float MOVE_SPEED = 60.0f;
+    public const float MOVE_ACCEL = 0.7f;
     public const float JUMP_SPEED = 6.0f;
     public const float PLAYER_RADIUS = 0.3f;
-    public const float CAM_HEIGHT = 1.62f;
+    public float CAM_HEIGHT = 1.62f;
     public const float VOLUME_TIME = 0.75f;
     public const float GRAVITY_RATE = 90.0f; //Degrees / Sec
     public const float GRAVITY_SMOOTH = 0.25f;
@@ -202,7 +203,7 @@ public class CameraControl4D : BasicCamera4D {
             }
         }
 
-        return accel;
+        return accel * MOVE_ACCEL;
     }
 
     protected virtual void Update() {

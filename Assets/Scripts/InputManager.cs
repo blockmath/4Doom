@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
@@ -9,7 +9,7 @@ using UnityEngine.InputSystem;
 public static class InputManager {
     //Game preferences
     public static float CAM_SMOOTHING = 0.05f; //Seconds to half the speed
-    public static float LOOK_SENSITIVITY = 1.0f;
+    public static float LOOK_SENSITIVITY = 4.0f;
     public static float PUTT_SENSITIVITY = 1.0f;
     public static float DEADZONE = 0.2f;
 
@@ -90,9 +90,9 @@ public static class InputManager {
         { KeyBind.Kata, KeyCode.E },
         { KeyBind.Sursum, KeyCode.Z },
         { KeyBind.Deorsum, KeyCode.X },
-        { KeyBind.Look4D, KeyCode.Mouse0 },
-        { KeyBind.Look5D, KeyCode.Mouse1 },
-        { KeyBind.LookSpin, KeyCode.Mouse2 },
+        { KeyBind.Look4D, KeyCode.Mouse1 },
+        { KeyBind.Look5D, KeyCode.Mouse0 }, // hijacked for shoot weapon
+        { KeyBind.LookSpin, KeyCode.Mouse2 }, // hijacked for shoot weapon
         { KeyBind.Putt, KeyCode.Space },
         { KeyBind.Reset, KeyCode.R },
         { KeyBind.VolumeView, KeyCode.V },

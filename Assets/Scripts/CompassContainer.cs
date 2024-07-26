@@ -25,7 +25,7 @@ public class CompassContainer : MonoBehaviour {
         Disabled = 2,
     }
 
-    public static CompassType compassType = CompassType.Isoclinic;
+    public static CompassType compassType = CompassType.Stereographic;
     public static bool useVolumeLine = false;
 
     public bool is5D = false;
