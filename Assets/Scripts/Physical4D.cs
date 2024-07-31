@@ -6,8 +6,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Physical4D : MonoBehaviour {
-    public static float GRAVITY = -19.81f;       //Acceleration on Y-axis (m/s^2)
-    public const float MAX_UP_VELOCITY_GROUNDED = 1.0f;
+    public static float GRAVITY = -19.62f;       //Acceleration on Y-axis (m/s^2)
+    public const float MAX_UP_VELOCITY_GROUNDED = 5.0f;
 
     public float velocityDecay = 1.0f;         //Seconds to reach half-velocity (s)
     public bool collisionsEnabled = true;

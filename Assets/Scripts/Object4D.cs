@@ -39,7 +39,7 @@ public class Object4D : MonoBehaviour {
     private MeshRenderer mr = null;
     private int numMaterials = 0;
     private MaterialPropertyBlock propBlock = null;
-    [SerializeField] private Matrix4x4 _localRotation4D;
+    [SerializeField] public Matrix4x4 _localRotation4D;
     private bool isAwake = false;
 #if USE_4D
     private Matrix4x4 tempMatrixIT;
@@ -242,5 +242,12 @@ public class Object4D : MonoBehaviour {
     public Object4D GetParent() {
         Awake();
         return parent;
+    }
+    
+    protected void OnDestroy() {
+        int id = gameObject.GetInstanceID();
+        if (Collider4D.colliders.ContainsKey(id)) {
+            Collider4D.colliders.Remove(id);
+        }
     }
 }

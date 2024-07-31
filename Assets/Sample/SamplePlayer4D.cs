@@ -8,7 +8,6 @@ using UnityEditor;
 public class SamplePlayer4D : CameraControl4D {
     [SerializeField] public float JUMP_VELOCITY = 6.0f;
     [SerializeField] public float JUMP_SPEEDUP = 0.05f;
-    [SerializeField] public float FRAME_TIME = 0.1f;
     
     [SerializeField] public float BOB_TIME = 0.5f;
     [SerializeField] public float BOB_STRENGTH = 20.0f;
@@ -17,29 +16,66 @@ public class SamplePlayer4D : CameraControl4D {
     [SerializeField] public float BOB_ASPECT = 0.7f;
     [SerializeField] public float BOB_CAP = 10.0f;
     
+    [SerializeField] public float ROCKET_RECOIL = 5.0f;
+    [SerializeField] public float ROCKET_RECOIL_ANIM = 25.0f;
+    [SerializeField] public float ROCKET_RECOIL_ANIM_LENGTH = 2.0f;
+    [SerializeField] public float RECOIL_POW = 2.0f;
+    public float rocketRecoilAnimTimer = 0.0f;
+    
     [SerializeField] public float HSPEED;
+    
+    
     [SerializeField] private UnityEngine.UI.Image gunImage;
+    
+    [SerializeField] private Transform reticleOrigin;
+    [SerializeField] private Transform reticleTarget;
 
     [SerializeField] Sprite[] abilityIconsAtlas;
     
     [SerializeField] private Vector2 gunImageOrigin;
     [SerializeField] private float camHeightOrigin;
+    
+    [SerializeField] private GameObject missilePrefab;
+    [SerializeField] private GameObject bulletPrefab;
+    
     private float timer = 0.0f;
     
     public enum DoomWeapon {
         FISTS,
         PISTOL,
         SHOTGUN,
+        SUPERSHOTGUN,
+        CHAINGUN,
+        ROCKETLAUNCHER,
     };
+    
+    public const DoomWeapon finalWeapon = DoomWeapon.ROCKETLAUNCHER;
     
     public static readonly Dictionary<DoomWeapon, string> weaponSpriteNames = new() {
         {DoomWeapon.FISTS, "hand"},
         {DoomWeapon.PISTOL, "pistol"},
+        {DoomWeapon.SHOTGUN, "buck"},
+        {DoomWeapon.SUPERSHOTGUN, "ultrabuck"},
+        {DoomWeapon.CHAINGUN, "gatling"},
+        {DoomWeapon.ROCKETLAUNCHER, "dominion"},
     };
     
     public static readonly Dictionary<DoomWeapon, int> weaponSpriteAnimFrames = new() {
         {DoomWeapon.FISTS, 4},
-        {DoomWeapon.PISTOL, 5},
+        {DoomWeapon.PISTOL, 4},
+        {DoomWeapon.SHOTGUN, 6},
+        {DoomWeapon.SUPERSHOTGUN, 10},
+        {DoomWeapon.CHAINGUN, 2},
+        {DoomWeapon.ROCKETLAUNCHER, 5},
+    };
+    
+    public static readonly Dictionary<DoomWeapon, float> weaponSpriteAnimSpeed = new() {
+        {DoomWeapon.FISTS, 0.1f},
+        {DoomWeapon.PISTOL, 0.1f},
+        {DoomWeapon.SHOTGUN, 0.09f},
+        {DoomWeapon.SUPERSHOTGUN, 0.1f},
+        {DoomWeapon.CHAINGUN, 0.05f},
+        {DoomWeapon.ROCKETLAUNCHER, 0.1f},
     };
     
     [SerializeField] private DoomWeapon weapSelected = DoomWeapon.FISTS;
@@ -52,6 +88,9 @@ public class SamplePlayer4D : CameraControl4D {
         abilityIconsAtlas = Resources.LoadAll<Sprite>(AssetDatabase.GetAssetPath(gunImage.sprite.GetInstanceID()).Replace(".png", "").Replace("Assets/Resources/", ""));
         gunImageOrigin = gunImage.rectTransform.anchoredPosition;
         camHeightOrigin = CAM_HEIGHT;
+    
+        Shader.SetGlobalVector(Shader.PropertyToID("_ShadowColor1"), new Vector4(0.0f, 0.5f, 1.0f, 1.0f));
+        Shader.SetGlobalVector(Shader.PropertyToID("_ShadowColor2"), new Vector4(1.0f, 0.5f, 0.0f, 1.0f));
     }
     
     private Sprite getSprite(string name) {
@@ -95,28 +134,90 @@ public class SamplePlayer4D : CameraControl4D {
             isGrounded = false;
         }
         
+        // switch weapon (debug showcase version)
+        if (InputManager.GetKeyDown(InputManager.KeyBind.LookSpin) && !firing) {
+            if (weapSelected == finalWeapon) weapSelected = DoomWeapon.FISTS; else weapSelected++;
+        }
+        
         // fire weapon
         if (InputManager.GetKey(InputManager.KeyBind.Look5D) && !firing) {
             firing = true;
+            switch (weapSelected) {
+                case DoomWeapon.FISTS:
+                    Vector3 relativeOffset = reticleTarget.position - reticleOrigin.position;
+                    Vector4 offset4D = camMatrix * new Vector4(relativeOffset.x, relativeOffset.y, relativeOffset.z, 0.0f);
+                    Vector4 fistPosition4D = offset4D + ((BasicCamera4D)this).position4D;
+                    break;
+                case DoomWeapon.PISTOL: {
+                    Object4D bullet = Instantiate(bulletPrefab).GetComponent<Object4D>();
+                    bullet.localPosition4D = position4D + camMatrix * new Vector4(0.0f, CAM_HEIGHT - 0.1f, 0.2f, 0.0f);
+                    bullet.localRotation4D = camMatrix;
+                    bullet.GetComponent<Missile4D>().damage = 5;
+                    bullet.GetComponent<Missile4D>().inheritedVelocity = velocity;
+                    }
+                    break;
+                case DoomWeapon.SHOTGUN: {
+                    Object4D bullet = Instantiate(bulletPrefab).GetComponent<Object4D>();
+                    bullet.localPosition4D = position4D + camMatrix * new Vector4(0.0f, CAM_HEIGHT - 0.12f, 0.2f, 0.0f);
+                    bullet.localRotation4D = camMatrix;
+                    bullet.GetComponent<Missile4D>().damage = 12;
+                    bullet.GetComponent<Missile4D>().inheritedVelocity = velocity;
+                    
+                    bullet = Instantiate(bulletPrefab).GetComponent<Object4D>();
+                    bullet.localPosition4D = position4D + camMatrix * new Vector4(0.0f, CAM_HEIGHT - 0.08f, 0.2f, 0.0f);
+                    bullet.localRotation4D = camMatrix;
+                    bullet.GetComponent<Missile4D>().damage = 12;
+                    bullet.GetComponent<Missile4D>().inheritedVelocity = velocity;
+                    }
+                    break;
+                case DoomWeapon.SUPERSHOTGUN: {
+                    Object4D bullet = Instantiate(bulletPrefab).GetComponent<Object4D>();
+                    bullet.localPosition4D = position4D + camMatrix * new Vector4(-0.02f, CAM_HEIGHT - 0.1f, 0.2f, 0.0f);
+                    bullet.localRotation4D = camMatrix;
+                    bullet.GetComponent<Missile4D>().damage = 20;
+                    bullet.GetComponent<Missile4D>().inheritedVelocity = velocity;
+                    
+                    bullet = Instantiate(bulletPrefab).GetComponent<Object4D>();
+                    bullet.localPosition4D = position4D + camMatrix * new Vector4(0.02f, CAM_HEIGHT - 0.1f, 0.2f, 0.0f);
+                    bullet.localRotation4D = camMatrix;
+                    bullet.GetComponent<Missile4D>().damage = 20;
+                    bullet.GetComponent<Missile4D>().inheritedVelocity = velocity;
+                    }
+                    break;
+                case DoomWeapon.CHAINGUN: {
+                    Object4D bullet = Instantiate(bulletPrefab).GetComponent<Object4D>();
+                    bullet.localPosition4D = position4D + camMatrix * new Vector4(0.0f, CAM_HEIGHT - 0.1f, 0.2f, 0.0f);
+                    bullet.localRotation4D = camMatrix;
+                    bullet.GetComponent<Missile4D>().damage = 5;
+                    bullet.GetComponent<Missile4D>().inheritedVelocity = velocity;
+                    }
+                    break;
+                case DoomWeapon.ROCKETLAUNCHER:
+                    Object4D missile = Instantiate(missilePrefab).GetComponent<Object4D>();
+                    missile.localPosition4D = position4D + camMatrix * new Vector4(0.0f, CAM_HEIGHT - 0.3f, 0.1f, 0.0f);
+                    missile.localRotation4D = camMatrix;
+                    missile.GetComponent<Missile4D>().inheritedVelocity = velocity;
+                    rocketRecoilAnimTimer = -0.1f;
+                    velocity += (camMatrix * new Vector4(0.0f, 0.0f, -ROCKET_RECOIL, 0.0f));
+                    break;
+            }
         }
         
-        // switch weapon (debug showcase version)
-        if (InputManager.GetKeyDown(InputManager.KeyBind.LookSpin) && !firing) {
-            if (weapSelected == DoomWeapon.FISTS) weapSelected = DoomWeapon.PISTOL; else weapSelected = DoomWeapon.FISTS;
-        }
+        
         
         HSPEED = (Matrix4x4.Inverse(camMatrix) * velocity).z;
         
         if (firing) {
             bool shouldUpdate = false;
             subframe += Time.deltaTime;
-            if (subframe >= FRAME_TIME) {
+            
+            if (subframe >= weaponSpriteAnimSpeed[weapSelected]) {
                 frame++;
                 subframe = 0;
                 shouldUpdate = true;
             }
             if (frame >= weaponSpriteAnimFrames[weapSelected]) {
-                if (weapSelected == DoomWeapon.FISTS && frame < weaponSpriteAnimFrames[weapSelected] * 2 - 1) {
+                if ((weapSelected == DoomWeapon.FISTS && frame < weaponSpriteAnimFrames[weapSelected] * 2 - 1) || (weapSelected == DoomWeapon.SHOTGUN && frame < weaponSpriteAnimFrames[weapSelected] * 2 - 2)) {
                     ;
                 } else {
                     firing = false;
@@ -129,6 +230,20 @@ public class SamplePlayer4D : CameraControl4D {
                 setSpriteTo(weaponSpriteNames[weapSelected] + "_" + animFrame);
                 gunImage.SetNativeSize();
             }*/
+        }
+        if (weapSelected == DoomWeapon.ROCKETLAUNCHER) {
+            rocketRecoilAnimTimer += Time.deltaTime;
+            float recoilFactor = rocketRecoilAnimTimer / ROCKET_RECOIL_ANIM_LENGTH;
+            if (0.0f <= recoilFactor && recoilFactor < 1.0f) {
+                float correctedRecoilFactor = 1 - Mathf.Pow(1 - recoilFactor, RECOIL_POW);
+                float recoilDist = 0.0f;
+                if (correctedRecoilFactor < 0.5f) {
+                    recoilDist = ROCKET_RECOIL_ANIM * Mathf.Sin(correctedRecoilFactor * Mathf.PI);
+                } else {
+                    recoilDist = ROCKET_RECOIL_ANIM * Mathf.Sin(recoilFactor * Mathf.PI) * Mathf.Sin(correctedRecoilFactor * Mathf.PI);
+                }
+                gunImage.rectTransform.anchoredPosition += new Vector2(0.0f, -recoilDist);
+            }
         }
         int animFrame = frame;
         if (animFrame >= weaponSpriteAnimFrames[weapSelected]) animFrame = (weaponSpriteAnimFrames[weapSelected] * 2 - animFrame - 1);

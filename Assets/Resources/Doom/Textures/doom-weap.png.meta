@@ -253,7 +253,7 @@ TextureImporter:
         width: 59
         height: 73
       alignment: 9
-      pivot: {x: 0.57958984, y: 0}
+      pivot: {x: 0.57412153, y: 0.013259261}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -272,9 +272,9 @@ TextureImporter:
         x: 1147
         y: 372
         width: 79
-        height: 83
+        height: 103
       alignment: 9
-      pivot: {x: 0.71033335, y: 0}
+      pivot: {x: 0.7021654, y: 0.1534889}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -287,7 +287,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: doom-weap_pistol_2
+      name: doom-weap_pistol_3
       rect:
         serializedVersion: 2
         x: 1227
@@ -308,7 +308,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: doom-weap_pistol_3
+      name: doom-weap_pistol_4
       rect:
         serializedVersion: 2
         x: 1295
@@ -329,7 +329,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: doom-weap_pistol_4
+      name: doom-weap_pistol_2
       rect:
         serializedVersion: 2
         x: 1359
@@ -337,7 +337,7 @@ TextureImporter:
         width: 82
         height: 105
       alignment: 9
-      pivot: {x: 0.64537084, y: 0}
+      pivot: {x: 0.64537233, y: 0.097341485}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -345,6 +345,489 @@ TextureImporter:
       bones: []
       spriteID: 5d50abdebbe944021b86f95e47e5b321
       internalID: -2106938941
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: doom-weap_buck_1
+      rect:
+        serializedVersion: 2
+        x: 129
+        y: 202
+        width: 84
+        height: 75
+      alignment: 9
+      pivot: {x: 0.5770402, y: 0.0038614909}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0ae8f2cede5fc4112a3f5281664d0959
+      internalID: 1200259881
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: doom-weap_buck_2
+      rect:
+        serializedVersion: 2
+        x: 218
+        y: 202
+        width: 119
+        height: 122
+      alignment: 9
+      pivot: {x: 0.80317724, y: 0.0013857982}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 900aec48007cd4b199fe3ef77173163c
+      internalID: -1656382369
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: doom-weap_buck_3
+      rect:
+        serializedVersion: 2
+        x: 337
+        y: 202
+        width: 91
+        height: 156
+      alignment: 9
+      pivot: {x: 0.70929927, y: 0.0022016673}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 39fb3628ebe484a638a2d641c95a4337
+      internalID: 1554785442
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: doom-weap_buck_4
+      rect:
+        serializedVersion: 2
+        x: 428
+        y: 202
+        width: 115
+        height: 150
+      alignment: 9
+      pivot: {x: 0.6648679, y: 0.0112838745}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 033bcf52953cd42888023fa36f8f9dd8
+      internalID: -298956529
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: doom-weap_ultrabuck_0
+      rect:
+        serializedVersion: 2
+        x: 544
+        y: 202
+        width: 61
+        height: 55
+      alignment: 9
+      pivot: {x: 0.499999, y: 0.005822199}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7361fc34d08984cadbecaa69a01c3627
+      internalID: -208658147
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: doom-weap_ultrabuck_3
+      rect:
+        serializedVersion: 2
+        x: 606
+        y: 203
+        width: 85
+        height: 102
+      alignment: 9
+      pivot: {x: 0.71936107, y: 0.0015933467}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 940974c5e9943449b8ef73334765db0d
+      internalID: -614066400
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: doom-weap_ultrabuck_4
+      rect:
+        serializedVersion: 2
+        x: 692
+        y: 203
+        width: 123
+        height: 131
+      alignment: 9
+      pivot: {x: 0.72090656, y: 0.0027084933}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 985b3203cfd974b7c9e9b9176c1edebe
+      internalID: -197643629
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: doom-weap_ultrabuck_5
+      rect:
+        serializedVersion: 2
+        x: 815
+        y: 203
+        width: 84
+        height: 84
+      alignment: 9
+      pivot: {x: 0.6977372, y: 0.007633754}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 785c6ad5d075747518e08e8456180dc5
+      internalID: -143621962
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: doom-weap_ultrabuck_6
+      rect:
+        serializedVersion: 2
+        x: 900
+        y: 203
+        width: 202
+        height: 82
+      alignment: 9
+      pivot: {x: 0.73353803, y: 0.0054393862}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6afe7f391393142a38b901b39f4ec523
+      internalID: 921340265
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: doom-weap_ultrabuck_7
+      rect:
+        serializedVersion: 2
+        x: 1104
+        y: 203
+        width: 89
+        height: 81
+      alignment: 9
+      pivot: {x: 0.6308813, y: 0.0046601472}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1221924f3423a4b97b67f91800d2a866
+      internalID: 934960941
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: doom-weap_ultrabuck_8
+      rect:
+        serializedVersion: 2
+        x: 1195
+        y: 203
+        width: 83
+        height: 87
+      alignment: 9
+      pivot: {x: 0.45321766, y: 0.004108999}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ec17389bf78784856a9c67277a3eb42b
+      internalID: 2101185296
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: doom-weap_ultrabuck_9
+      rect:
+        serializedVersion: 2
+        x: 1279
+        y: 203
+        width: 81
+        height: 88
+      alignment: 9
+      pivot: {x: 0.45206255, y: 0.004841544}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: de897ca5587824e9e8738fc654adc924
+      internalID: -1585641809
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: doom-weap_gatling_0
+      rect:
+        serializedVersion: 2
+        x: 14
+        y: 42
+        width: 117
+        height: 80
+      alignment: 9
+      pivot: {x: 0.5162366, y: 0.067793466}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fdac03eeacba94c7f8219441a1e74a9c
+      internalID: 1184979160
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: doom-weap_gatling_1
+      rect:
+        serializedVersion: 2
+        x: 133
+        y: 43
+        width: 115
+        height: 101
+      alignment: 9
+      pivot: {x: 0.49777406, y: 0.09453247}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fd3b54f362c7c4be19fc555e9b952d3c
+      internalID: -862497447
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: doom-weap_dominion_0
+      rect:
+        serializedVersion: 2
+        x: 290
+        y: 51
+        width: 89
+        height: 66
+      alignment: 9
+      pivot: {x: 0.502701, y: 0.034354758}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 159053f991742444281ffbbb09924563
+      internalID: -1614625234
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: doom-weap_dominion_1
+      rect:
+        serializedVersion: 2
+        x: 1407
+        y: 216
+        width: 92
+        height: 86
+      alignment: 9
+      pivot: {x: 0.5, y: 0.013431549}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7959b213bbcad427e8f9db47dfaa06c2
+      internalID: -1098611781
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: doom-weap_dominion_2
+      rect:
+        serializedVersion: 2
+        x: 1518
+        y: 216
+        width: 91
+        height: 93
+      alignment: 9
+      pivot: {x: 0.49999732, y: 0.024751069}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7a7147922b7684529983e9c473d1ca1c
+      internalID: -490765173
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: doom-weap_dominion_3
+      rect:
+        serializedVersion: 2
+        x: 1637
+        y: 216
+        width: 94
+        height: 102
+      alignment: 9
+      pivot: {x: 0.5154874, y: 0.02360041}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 52f6b2c68a2b44bb6a41c7912234abb1
+      internalID: -720019115
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: doom-weap_dominion_4
+      rect:
+        serializedVersion: 2
+        x: 1758
+        y: 216
+        width: 113
+        height: 112
+      alignment: 9
+      pivot: {x: 0.48981518, y: 0.031977337}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dadc762e79d2c45799a5c565738adbae
+      internalID: -1779141660
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: doom-weap_ultrabuck_2
+      rect:
+        serializedVersion: 2
+        x: 725
+        y: 121
+        width: 78
+        height: 79
+      alignment: 9
+      pivot: {x: 0.5204616, y: 0.0049977363}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c199a2086e13249a8a9edc5182197ce4
+      internalID: 316496010
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: doom-weap_ultrabuck_1
+      rect:
+        serializedVersion: 2
+        x: 648
+        y: 120
+        width: 68
+        height: 73
+      alignment: 9
+      pivot: {x: 0.4999991, y: 0.0080423225}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 389d4454784c741fe83dc4a055622b00
+      internalID: -606185853
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: doom-weap_buck_0
+      rect:
+        serializedVersion: 2
+        x: 27
+        y: 199
+        width: 86
+        height: 60
+      alignment: 9
+      pivot: {x: 0.55275404, y: 0.004303487}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 805d261f94fea4b0db5adccf698a2b3d
+      internalID: 1903509446
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: doom-weap_buck_5
+      rect:
+        serializedVersion: 2
+        x: 1707
+        y: 349
+        width: 105
+        height: 154
+      alignment: 9
+      pivot: {x: 0.7278576, y: 0.008030483}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e6632ee9e9ce0452bacd42a0db0335ec
+      internalID: -1790334246
       vertices: []
       indices: 
       edges: []
@@ -360,17 +843,40 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
+      doom-weap_buck_4: -298956529
+      doom-weap_ultrabuck_7: 934960941
+      doom-weap_buck_0: 1903509446
       doom-weap_saw_1: 26314631
       doom-weap_hand_2: -774878619
-      doom-weap_pistol_2: -92519516
+      doom-weap_pistol_2: -2106938941
+      doom-weap_ultrabuck_1: -606185853
+      doom-weap_dominion_3: -720019115
       doom-weap_pistol_1: -426210109
+      doom-weap_dominion_2: -490765173
+      doom-weap_ultrabuck_8: 2101185296
       doom-weap_saw_0: -1619451221
-      doom-weap_pistol_4: -2106938941
-      doom-weap_pistol_3: -1380706296
+      doom-weap_buck_3: 1554785442
+      doom-weap_pistol_4: -1380706296
+      doom-weap_dominion_1: -1098611781
+      doom-weap_ultrabuck_9: -1585641809
+      doom-weap_ultrabuck_5: -143621962
+      doom-weap_buck_5: -1790334246
+      doom-weap_pistol_3: -92519516
+      doom-weap_dominion_0: -1614625234
+      doom-weap_ultrabuck_0: -208658147
       doom-weap_hand_0: -2010871124
       doom-weap_hand_3: -1356520085
-      doom-weap_hand_1: 803140719
+      doom-weap_gatling_1: -862497447
+      doom-weap_dominion_4: -1779141660
+      doom-weap_buck_1: 1200259881
+      doom-weap_ultrabuck_3: -614066400
+      doom-weap_ultrabuck_4: -197643629
+      doom-weap_ultrabuck_6: 921340265
+      doom-weap_buck_2: -1656382369
+      doom-weap_gatling_0: 1184979160
       doom-weap_pistol_0: 338695672
+      doom-weap_ultrabuck_2: 316496010
+      doom-weap_hand_1: 803140719
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
