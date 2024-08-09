@@ -250,4 +250,8 @@ public class Object4D : MonoBehaviour {
             Collider4D.colliders.Remove(id);
         }
     }
+
+    public static UnityEngine.GameObject InstanceIDToObject(int iid) {
+        return (UnityEngine.GameObject)typeof(UnityEngine.Object).GetMethod("FindObjectFromInstanceID", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static).Invoke(null, new object [] { iid });
+    }
 }

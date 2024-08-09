@@ -79,14 +79,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 340cc7258945542898568b11e57e4a91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startVelocity: 5
+  missileSize: 0.5
+  startVelocity: 15
   acceleration: 20
   limitVelocity: 30
   speed: 0
   lifetime: 5
   timeActive: 0
   shouldExplode: 1
+  explosionRadius: 5
+  explosionForce: 10
   damage: 10
+  inheritedVelocity: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1 &2850776267854903959
 GameObject:
   m_ObjectHideFlags: 0
