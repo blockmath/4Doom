@@ -49,6 +49,9 @@ public class Enemy4D : Object4D
     // Update is called once per frame
     void Update()
     {
-        localPosition4D += velocity * Time.deltaTime;
+        if (Application.isPlaying) {
+            //velocity.y += Physical4D.GRAVITY;
+            localPosition4D += velocity * Time.deltaTime;
+        }
     }
 }
