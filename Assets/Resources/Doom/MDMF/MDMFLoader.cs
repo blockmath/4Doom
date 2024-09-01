@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Reflection;
 using UnityEngine;
 
 class MDMFException : System.Exception {
@@ -14,6 +15,8 @@ class ParseException : MDMFException {
     public ParseException(string message, int line) { base("Parse error at line " + line.ToString() + ":" + message); }
     public ParseException(string message, Exception inner) : base(message, inner) {}
 }
+
+class ScriptExecutionException : MDMFException {}
 
 enum FieldTag {
     TagErr = -1,
@@ -60,14 +63,18 @@ class Sector {
 class PlaneDef {
     public List<Vector3> Vertices;
     public int SectorId;
-    public Autofield Line;
+    public Autofield Tags;
 }
 
 struct ScriptInstruction {
     public List<string> Tokens;
+
+    ScriptInstruction(List<string> line) {
+        Tokens = new List<string>(line);
+    }
 }
 
-class ScriptManager {
+public class ScriptManager {
     public static Dictionary<int, Script> allScripts;
     public static Dictionary<Script, double> activeScripts;
 
@@ -82,6 +89,7 @@ class ScriptManager {
     public static void Update() {
         bool didExecuteAnything = true;
         int i = 0;
+        // Scripts are limited to 2048 commands per frame
         while (didExecuteAnything && i++ < 2048) {
             didExecuteAnything = false;
             foreach (Script s in activeScripts.Keys) {
@@ -93,8 +101,6 @@ class ScriptManager {
         }
     }
 }
-
-class ScriptExecutionException : MDMFException {}
 
 class Script {
     public List<ScriptInstruction> Contents;
@@ -122,7 +128,7 @@ class Script {
         if (!execActive) {
             ScriptManager.activeScripts.Remove(this);
         }
-        ScriptInstruction instr = new ScriptInstruction { new List<string>(Contents[eip++]) };
+        ScriptInstruction instr = new ScriptInstruction(Contents[eip++]);
         for (int i = 1; i < instr.Tokens.Length; i++) {
             // Replace parameters with their respective values
             if (instr.Tokens[i][0] == "$") {
@@ -152,12 +158,14 @@ class Script {
     }
 }
 
-struct MDMFToken {
-
+struct YieldObject {
+    object _obj;
+    int endl;
 }
 
-struct MDMFLine {
-    public List<MDMFToken> Tokens;
+public struct LevelData {
+    public List<Sector> Sectors;
+    public Dictionary<int, PlaneDef> PlaneDefs;
 }
 
 public class MDMFLoader : MonoBehaviour {
@@ -168,6 +176,10 @@ public class MDMFLoader : MonoBehaviour {
     public static string Theme {get; private set;};
 
     public static Dictionary<string,string> Defines = new Dictionary<string, string>();
+    public static List<Sector> Sectors;
+    public static Dictionary<int, Autofield> Lines;
+    public static Dictionary<int, PlaneDef> PlaneDefs;
+    public static LevelData resultData;
 
     public static bool StrictParse = true;
 
@@ -196,8 +208,10 @@ public class MDMFLoader : MonoBehaviour {
         return loadingFile;
     }
 
-    public static void Load(string file) {
-        
+    public static LevelData Load(string _file) {
+        file = FileLoad(_file);
+        Parse();
+        return resultData;
     }
 
     public static void Parse() {
@@ -265,7 +279,7 @@ public class MDMFLoader : MonoBehaviour {
         string processedLine = line;
         processedLine = Regex.Replace(processedLine, "{:", "??1", RegexOptions.CultureInvariant);
         processedLine = Regex.Replace(processedLine, ":}", "??2", RegexOptions.CultureInvariant);
-        processedLine = Regex.Replace(processedLine, @"([,{}[\]<>:])", "  \1", RegexOptions.CultureInvariant);
+        processedLine = Regex.Replace(processedLine, @"([,{}[\]<>:%$])", "  \1 ", RegexOptions.CultureInvariant);
         processedLine = Regex.Replace(processedLine, @"\?\?1", "{:", RegexOptions.CultureInvariant);
         processedLine = Regex.Replace(processedLine, @"\?\?2", ":}", RegexOptions.CultureInvariant);
         return processedLine;
@@ -284,11 +298,139 @@ public class MDMFLoader : MonoBehaviour {
         return processedLine.Split();
     }
 
+    public static YieldObject MDMFGetObject(List<string> _obj, int objSt, int ln) {
+        YieldObject yield = new YieldObject();
+        try if (_obj[objSt + 0] == "[" && Regex.Match(_obj[objSt + 1], "^[A-Za-z_][0-9A-Za-z_]*$", RegexOption.IgnoreCase | RegexOptions.CultureInvariant).Success && _obj[objSt + 2] == "]" && _obj[_objSt + 3] == "{") goto _ObjectFactory; catch (IndexOutOfRangeException ignored); if (false) {
+        _ObjectFactory:
+            System.Type _type = Type.GetType(_obj[objSt + 1]);
+            int _objSt = objSt + 3;
+            if (StrictParse && _obj[_objSt] != "{") {
+                if (_objSt >= _obj.Length) {
+                    throw new ParseException("Expected '{', got end-of-line", ln);
+                } else {
+                    throw new ParseException("Expected '{', got '" + _obj[_objSt] + "'", ln);
+                }
+            }
+            int _objEnd;
+            int depth = 1;
+            for (_objEnd = _objSt + 1; depth > 0; _objEnd++) {
+                if (_obj[_objEnd] == "{") depth++;
+                if (_obj[_objEnd] == "}") depth--;
+                if (_objEnd >= _obj.Length) {
+                    throw new ParseException("Expected '}', got end-of-line", ln);
+                }
+            }
+            yield.endl = _objEnd;
+            int i = _objSt + 1;
+            // *inhales* REFLECTION
+            yield._obj = (object)Activator.CreateInstance(_type);
+            while (i < _objEnd - 1) {
+                if (_obj[i] == ",") i++;
+                if (i >= _objEnd || _obj[i+1] != ":") {
+                    throw new ParseException("Expected ':', got '" + _obj[i+1] + "'", ln);
+                }
+                YieldObject parsedObj = MDMFGetObject(_obj, i + 2, ln);
+                _type.GetField(_obj[i]).SetValue(yield._obj, (_type.GetField(_obj[i]).FieldType)parsedObj._obj);
+                i = parsedObj.endl + 1;
+            }
+            return yield;
+        } else try if (_obj[objSt + 0] == "[" && Regex.Match(_obj[objSt + 1], "^[A-Za-z_][0-9A-Za-z_]*$", RegexOption.IgnoreCase | RegexOptions.CultureInvariant).Success && _obj[objSt + 2] == "]" && _obj[_objSt + 3] == "[") goto _ListFactory; catch (IndexOutOfRangeException ignored); if (false) {
+        _ListFactory:
+            System.Type _type = Type.GetType(_obj[objSt + 1]);
+            int _objSt = objSt + 3;
+            if (StrictParse && _obj[_objSt] != "[") {
+                if (_objSt >= _obj.Length) {
+                    throw new ParseException("Expected '[', got end-of-line", ln);
+                } else {
+                    throw new ParseException("Expected '[', got '" + _obj[_objSt] + "'", ln);
+                }
+            }
+            int _objEnd;
+            int depth = 1;
+            for (_objEnd = _objSt + 1; depth > 0; _objEnd++) {
+                if (_obj[_objEnd] == "[") depth++;
+                if (_obj[_objEnd] == "]") depth--;
+                if (_objEnd >= _obj.Length) {
+                    throw new ParseException("Expected ']', got end-of-line", ln);
+                }
+            }
+            yield.endl = _objEnd;
+            int i = _objSt + 1;
+            yield._obj = (object)(new List<_type>());
+            while (i < _objEnd - 1) {
+                if (_obj[i] == ",") i++;
+                YieldObject parsedObj = MDMFGetObject(_obj, i, ln);
+                ((List<_type>)yield._obj).Add((_type)parsedObj._obj);
+                i = parsedObj.endl + 1;
+            }
+            return yield;
+        } else try if (_obj[objSt + 0] == "{:") goto _AutofieldFactory; catch (IndexOutOfRangeException ignored); if (false) {
+        _AutofieldFactory:
+            int _objSt = objSt;
+            int _objEnd;
+            int depth = 1;
+            for (_objEnd = _objSt + 1; depth > 0; _objEnd++) {
+                if (_obj[_objEnd] == "{:") depth++;
+                if (_obj[_objEnd] == ":}") depth--;
+                if (_objEnd >= _obj.Length) {
+                    throw new ParseException("Expected ':}', got end-of-line", ln);
+                }
+            }
+            yield.endl = _objEnd;
+            int i = _objSt + 1;
+            yield._obj = (object)(new Autofield());
+            while (i < _objEnd - 1) {
+                if (_obj[i] == ",") i++;
+                if (_obj[i][0] == "#") {
+                    FieldTag tag;
+                    Enum.TryParse(_obj[i].Substring(1), out tag);
+                    ((Autofield)yield._obj).Tags.Add(tag);
+                    i = i + 1;
+                } else {
+                    YieldObject parsedObj = MDMFGetObject(_obj, i, ln);
+                    System.Type _type = parsedObj.GetType();
+                    ((Autofield)yield._obj).Fields.Add(_type, parsedObj._obj);
+                    i = parsedObj.endl + 1;
+                }
+            }
+            return yield;
+        } else try if (_obj[objSt + 0] == "<") goto _VectorFactory; catch (IndexOutOfRangeException ignored); if (false) {
+        _VectorFactory:
+            yield.endl = objSt + 6;
+            yield._obj = (object)(new Vector3(double.Parse(_obj[objSt + 1]), double.Parse(_obj[objSt + 3]), double.Parse(_obj[objSt + 5])));
+            return yield;
+        } else try if (_obj[objSt + 0] == "%" && _obj[objSt + 1] == "<") goto _IntVectorFactory; catch (IndexOutOfRangeException ignored); if (false) {
+        _IntVectorFactory:
+            yield.endl = objSt + 7;
+            yield._obj = (object)(new Vector3Int(int.Parse(_obj[objSt + 2]), int.Parse(_obj[objSt + 4]), int.Parse(_obj[objSt + 6])));
+            return yield;
+        } else try if (_obj[objSt + 0] == "$" && _obj[objSt + 1] == "<") goto _QuaternionFactory; catch (IndexOutOfRangeException ignored); if (false) {
+        _QuaternionFactory:
+            yield.endl = objSt + 7;
+            yield._obj = (object)(Quaternion.Euler(double.Parse(_obj[objSt + 2]), double.Parse(_obj[objSt + 4]), double.Parse(_obj[objSt + 6])));
+            return yield;
+        } else try if (_obj[objSt + 0][0] == "#") goto _TagFactory; catch (IndexOutOfRangeException ignored); if (false) {
+        _TagFactory:
+            throw new ParseException("Unexpected tag: '" + _obj[objSt + 0] + "'. Tags must be enclosed in an autofield.", ln);
+        } else try if (_obj[objSt + 0][0] == "@") goto _IdentifierFactory; catch (IndexOutOfRangeException ignored); if (false) {
+        _IdentifierFactory:
+            yield.endl = objSt;
+            yield._obj = (object)(int.Parse(_obj[objSt + 0].Substring(1)));
+            return yield;
+        } else try if (Regex.Match(_obj[objSt + 0], @"-?([0-9]+|[0-9]*\.[0-9]+)", RegexOption.IgnoreCase | RegexOptions.CultureInvariant).Success) goto _DoubleFactory; catch (IndexOutOfRangeException ignored); if (false) {
+        _DoubleFactory:
+            yield.endl = objSt;
+            yield._obj = (object)(double.Parse(_obj[objSt + 0]));
+            return yield;
+        } else {
+            throw new ParseException("Unrecognized object token: '" + _obj[objSt] + "'", ln);
+        }
+    }
+
     public static void ParseMDMFSegment(int segSt) {
         string segmentType = file[segSt].Split()[1];
         switch (segmentType) {
             case "Defines": {
-                Defines.Clear();
                 for (int i = segSt + 1;; i++) {
                     if (i >= file.Length) {
                         if (StrictParse) {
@@ -319,16 +461,84 @@ public class MDMFLoader : MonoBehaviour {
                 }
                 break;
             }
-            case "TextDefs": {
-                break;
-            }
             case "Scripts": {
+                for (int i = segSt + 1;;) {
+                    if (i >= file.Length) {
+                        if (StrictParse) {
+                            throw new ParseException("Expected '#Segment' or further data, found end-of-file.", i);
+                        } else {
+                            break;
+                        }
+                    }
+                    if (file[i].Split()[0] == "#Segment") {
+                        break;
+                    }
+                    List<string> line = MDMFLinePreprocess(file[i]);
+                    if (line[0][0] != "@") {
+                        throw new ParseException("Expected reference ID, got '" + line[0] + "'", i);
+                    }
+                    if (line[1] != "begin") {
+                        throw new ParseException("Expected script initial delimiter ('begin'), got '" + line[1] + "'", i);
+                    }
+                    Script script = new Script();
+                    script.SectorId = int.Parse(line[0].Substring(1));
+                    script.Contents = new List<ScriptInstruction>();
+                    for (;;i++) {
+                        line = MDMFLinePreprocess(file[i]);
+                        if (line[0] == "end") {
+                            break;
+                        } else if (line[0] == "#Segment") {
+                            throw new ParseException("Unexpected segment delimiter: Expected script delimiter ('end'), got '#Segment'", i);
+                        } else {
+                            script.Contents.Add(new ScriptInstruction(line));
+                        }
+                    }
+                    ScriptManager.allScripts.Add(script);
+                }
                 break;
             }
             case "Lines": {
+                for (int i = segSt + 1;; i++) {
+                    if (i >= file.Length) {
+                        if (StrictParse) {
+                            throw new ParseException("Expected '#Segment' or further data, found end-of-file.", i);
+                        } else {
+                            break;
+                        }
+                    }
+                    if (file[i].Split()[0] == "#Segment") {
+                        break;
+                    }
+                    List<string> line = MDMFLinePreprocess(file[i]);
+                    YieldObject _objIndex = MDMFGetObject(line, 0, i);
+                    int li = (int)(_objIndex._obj);
+                    YieldObject yObj = MDMFGetObject(line, _objIndex.endl + 1, i);
+                    if (StrictParse && yObj.endl < line.Length - 1) {
+                        throw new ParseException("Expected end-of-line, got '" + line[yObj.endl + 1] + "'", i);
+                    }
+                    Lines.Add(li, (Autofield)(yObj._obj));
+                }
                 break;
             }
             case "Sectors": {
+                for (int i = segSt + 1;; i++) {
+                    if (i >= file.Length) {
+                        if (StrictParse) {
+                            throw new ParseException("Expected '#Segment' or further data, found end-of-file.", i);
+                        } else {
+                            break;
+                        }
+                    }
+                    if (file[i].Split()[0] == "#Segment") {
+                        break;
+                    }
+                    List<string> line = MDMFLinePreprocess(file[i]);
+                    YieldObject yObj = MDMFGetObject(line, 0, i);
+                    if (StrictParse && yObj.endl < line.Length - 1) {
+                        throw new ParseException("Expected end-of-line, got '" + line[yObj.endl + 1] + "'", i);
+                    }
+                    Sectors.Add((Sector)(yObj._obj));
+                }
                 break;
             }
         }
@@ -381,12 +591,15 @@ public class MDMFLoader : MonoBehaviour {
             throw new ParseException("Maximum import depth (32) exceeded. Aborting.", i);
         }
         Dictionary<string,int> segments = FindMDMFSegmentsAll(file);
+
+        Sectors.Clear();
+        Lines.Clear();
+        ScriptManager.activeScripts.Clear();
+        ScriptManager.allScripts.Clear();
+        Defines.Clear();
         
         if ("Defines" in segments.Keys) {
             ParseMDMFSegment(segments["Defines"]);
-        }
-        if ("TextDefs" in segments.Keys) {
-            ParseMDMFSegment(segments["TextDefs"]);
         }
         if ("Scripts" in segments.Keys) {
             ParseMDMFSegment(segments["Scripts"]);
@@ -401,5 +614,30 @@ public class MDMFLoader : MonoBehaviour {
                 throw new ParseException("File has no defined sectors. Aborting.", i);
             }
         }
+
+        PlaneDefs.Clear();
+        
+        foreach (int index in Lines.Keys) {
+            Autofield tags = new Autofield();
+            tags.Tags = new List<FieldTag>(Lines[index].Tags);
+            PlaneDefs.Add(index, new PlaneDef { new List<Vector3>(), index, tags });
+        }
+
+        foreach (Sector sector in Sectors) {
+            foreach (Autofield tri in sector.Boundary.Triangles) {
+                if (int in tri.Fields.Keys) {
+                    if ((int)(tri.Fields[int]) not in PlaneDefs.Keys) {
+                        throw new MDMFException("Could not find a planedef with ID " + (int)(tri.Fields[int]).ToString());
+                    }
+                    Vector3Int vi = (Vector3Int)(tri.Fields[Vector3Int]);
+                    Vector3 a = sector.Boundary.Vertices[vi.x], b = sector.Boundary.Vertices[vi.y], c = sector.Boundary.Vertices[vi.z];
+                    PlaneDefs[(int)(tri.Fields[int])].Vertices.AddRange(new List<Vector3>{ a, b, c });
+                }
+            }
+        }
+
+        resultData = new LevelData();
+        resultData.Sectors = Sectors;
+        resultData.PlaneDefs = PlaneDefs;
     }
 }
