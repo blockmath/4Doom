@@ -96,6 +96,7 @@ public class MenuTerminal : MonoBehaviour {
 
         if (Input.GetButtonDown("Submit")) {
             Debug.Log("Loading level " + items[selection].filepath);
+            SceneManager.LoadScene("Assets/Resources/Doom/Scenes/LevelScene.unity");
             string fp = items[selection].filepath;
             Debug.Log("fp get");
             LevelData levelData = MDMFLoader.Load(fp);
