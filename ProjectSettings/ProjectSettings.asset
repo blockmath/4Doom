@@ -744,7 +744,7 @@ PlayerSettings:
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
   metroPackageName: Engine4D
-  metroPackageVersion: 
+  metroPackageVersion: 1.0.0.0
   metroCertificatePath: 
   metroCertificatePassword: 
   metroCertificateSubject: 
@@ -752,7 +752,7 @@ PlayerSettings:
   metroCertificateNotAfter: 0000000000000000
   metroApplicationDescription: Engine4D
   wsaImages: {}
-  metroTileShortName: 
+  metroTileShortName: Engine4D
   metroTileShowName: 0
   metroMediumTileShowName: 0
   metroLargeTileShowName: 0
@@ -816,7 +816,7 @@ PlayerSettings:
   hmiForceSRGBBlit: 1
   embeddedLinuxEnableGamepadInput: 1
   hmiCpuConfiguration: 
-  apiCompatibilityLevel: 6
+  apiCompatibilityLevel: 3
   activeInputHandler: 2
   windowsGamepadBackendHint: 0
   cloudProjectId: 

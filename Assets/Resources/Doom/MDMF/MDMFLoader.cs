@@ -63,6 +63,11 @@ public class Sector {
     public float CellFloor, CellHeight;
     public int SectorId;
     public Autofield Tags;
+
+    // Apply scale, rotation, and translation (in that order) to vertices
+    public void ApplyTransform() {
+        throw new System.NotImplementedException("write apply transform function. todo: this");
+    }
 }
 
 public class PlaneDef {
@@ -86,8 +91,8 @@ public struct ScriptInstruction {
 }
 
 public class ScriptManager {
-    public static Dictionary<int, Script> allScripts;
-    public static Dictionary<Script, double> activeScripts;
+    public static Dictionary<int, Script> allScripts = new Dictionary<int, Script>();
+    public static Dictionary<Script, double> activeScripts = new Dictionary<Script, double>();
 
     public static void RunScript(List<double> args) { // args[0] is the script ID
         allScripts[(int)args[0]].ScriptRun(args);
@@ -187,9 +192,9 @@ public class MDMFLoader : MonoBehaviour {
     public static string Theme {get; private set;}
 
     public static Dictionary<string,string> Defines = new Dictionary<string, string>();
-    public static List<Sector> Sectors;
-    public static Dictionary<int, Autofield> Lines;
-    public static Dictionary<int, PlaneDef> PlaneDefs;
+    public static List<Sector> Sectors = new List<Sector>();
+    public static Dictionary<int, Autofield> Lines = new Dictionary<int, Autofield>();
+    public static Dictionary<int, PlaneDef> PlaneDefs = new Dictionary<int, PlaneDef>();
     public static LevelData resultData;
 
     public static bool StrictParse = true;
@@ -201,6 +206,10 @@ public class MDMFLoader : MonoBehaviour {
         } else {
             Destroy(gameObject);
         }
+    }
+
+    void Update() {
+        ScriptManager.Update();
     }
 
     public static List<string> FileLoad(string file) {
@@ -226,7 +235,7 @@ public class MDMFLoader : MonoBehaviour {
     }
 
     public static void Parse() {
-        if (file[0].Split()[0] != "#Format") {
+        if (file.Count < 1 || file[0].Split()[0] != "#Format") {
             throw new ParseException("File does not declare a #Format. If you are importing a 4D Golf track, prepend `#Format 4DGTrack` to the file before attempting to load.", 1);
         } else {
             string format = file[0].Split()[1];
@@ -432,11 +441,11 @@ public class MDMFLoader : MonoBehaviour {
             yield.endl = objSt;
             yield._obj = (object)(int.Parse(_obj[objSt + 0].Substring(1)));
             return yield;
-        } else try { if (Regex.Match(_obj[objSt + 0], @"-?([0-9]+|[0-9]*\.[0-9]+)", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant).Success) _DoubleFactory = true; } catch (IndexOutOfRangeException ignored) {} if (_DoubleFactory) {
+        } else try { if (Regex.Match(_obj[objSt + 0], @"(\\+|-)?([0-9]+|[0-9]*\.[0-9]+)", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant).Success) _DoubleFactory = true; } catch (IndexOutOfRangeException ignored) {} if (_DoubleFactory) {
             yield.endl = objSt;
-            yield._obj = (object)(double.Parse(_obj[objSt + 0]));
+            yield._obj = (object)(float.Parse(_obj[objSt + 0]));
             return yield;
-        } else {
+        } else { // TODO: possibly implement () tuples for floats specifically, to make triangle structure (wall height) less verbose?
             throw new ParseException("Unrecognized object token: '" + _obj[objSt] + "'", ln);
         }
     }
