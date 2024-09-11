@@ -5,8 +5,14 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Sample/SampleScene4D.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
+  - enabled: 1
+    path: Assets/Resources/Doom/Scenes/MenuScene.unity
+    guid: b6e35e23cbf024844926534e19bc2cf7
+  - enabled: 1
+    path: Assets/Resources/Doom/Scenes/LevelScene.unity
+    guid: 5a81d82c7434f074785089896e5aa22c
   m_configObjects:
     com.unity.xr.openxr.settings4: {fileID: 11400000, guid: 4c72aec9482887e48aba3d886e2e82dd, type: 2}

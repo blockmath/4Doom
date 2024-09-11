@@ -1,0 +1,145 @@
+{
+    "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+    "scopeName": "source.4DGolf",
+    "name": "4DGolf",
+    "comment": "Syntax highlighting support for 4DGolf.",
+    "fileTypes": [
+        "4dg"
+    ],
+    "patterns": [
+        {
+            "include": "#numbers"
+        },
+        {
+            "include": "#comments"
+        },
+        {
+            "include": "#comments_inline"
+        },
+        {
+            "match": "\\[[a-zA-Z0-9, *()]+\\]|[a-zA-Z0-9/_]*::[a-zA-Z0-9_]+",
+            "name": "class.4DGolf"
+        },
+        {
+            "match": "{:|:}",
+            "name": "autofield.4DGolf"
+        },
+        {
+            "match": "{|}",
+            "name": "braces.object.4DGolf"
+        },
+        {
+            "match": "#Segment( End)?",
+            "name": "segment.directive.4DGolf"
+        },
+        {
+            "match": "@\\d+",
+            "name": "id.4DGolf"
+        },
+        {
+            "match": "\\$\\d+",
+            "name": "param.script.4DGolf"
+        },
+        {
+            "match": "\\$<(\\+|-)?\\d+,(\\+|-)?\\d+,(\\+|-)?\\d+>",
+            "name": "rotation.4DGolf"
+        },
+        {
+            "match": "\\%<\\d+,\\d+,\\d+>",
+            "name": "index.vector.4DGolf"
+        },
+        {
+            "match": "\\%<[^>]*>",
+            "name": "invalid.transform.4DGolf"
+        },
+        {
+            "match": "<(\\+|-)?[\\d.]+,(\\+|-)?[\\d.]+,(\\+|-)?[\\d.]+>",
+            "name": "translation.4DGolf"
+        },
+        {
+            "match": "<.*>",
+            "name": "invalid.transform.4DGolf"
+        },
+        {
+            "match": "^#(Name|Theme|Par(Time)?|Day|Hole|Ball|Music|Sign|ShadowScale|Origin|Art|LegacyRotate|Format|ScriptRun)(?=\\s)",
+            "name": "metadata.4DGolf"
+        },
+        {
+            "match": "(?<=^#Name\\s)(.)+",
+            "name": "levelname.4DGolf"
+        },
+        {
+            "match": "(##|//).*",
+            "name": "comment.4DGolf"
+        },
+        {
+            "match": "^#[^ ]+",
+            "name": "directive.4DGolf"
+        },
+        {
+            "match": "#[^ ]+",
+            "name": "tag.4DGolf"
+        },
+        {
+            "match": "begin|^end",
+            "name": "reserved.script.4DGolf"
+        },
+        {
+            "match": "(\\+|-)?(?<![a-zA-Z])-?\\d+(\\.\\d+)?(E-?\\d+)?",
+            "name": "constant.numeric.4DGolf"
+        },
+        {
+            "match": "(?<=[a-zA-Z]\\w)(,(0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|21|22|23))(?=\\D)",
+            "name": "decorator.4DGolf.orientation"
+        },
+        {
+            "match": "!",
+            "name": "decorator.4DGolf.hole"
+        },
+        {
+            "match": "\\.",
+            "name": "decorator.4DGolf.ball"
+        },
+        {
+            "match": "@",
+            "name": "decorator.4DGolf.gravity"
+        },
+        {
+            "match": "\\^",
+            "name": "decorator.4DGolf.antigravity"
+        },
+        {
+            "match": "\\$",
+            "name": "decorator.4DGolf.ice"
+        },
+        {
+            "match": "\\*",
+            "name": "decorator.4DGolf.sand"
+        },
+        {
+            "match": "~",
+            "name": "decorator.4DGolf.booster"
+        },
+        {
+            "match": "Null",
+            "name": "null.4DGolf"
+        },
+
+        {
+            "match": "^(Adapter2To(4|6|8)|Adapter4To(2|6|8)|Adapter6To(2|4|8)|Adapter8To(2|4|6)|(Bank|Ramp)(Up|Down)(Bare)?(2|4|6|8)|Bend(Wide)?(Bare|Wall(In|Out))?(2|4|6|8)|Cliff(Up|Down)(2|4|6|8)|EndContinue(Bare)?2(To(4|6|8))?|EndContinue(Bare)?4(To(2|6|8))?|EndContinue(Bare)?6(To(2|4|8))?|EndContinue(Bare)?8(To(2|4|6))?|EndEdge(Bare)?(2|4|6|8)|(F|K|Loop|Micro|Open|T|XX?|YL?)(Bare)?(2|4|6|8)|Hill(Micro|Small)?(Up|Down)(Bare)?(2|4|6|8)|Skew(Slope(Up|Down))?(Bare)?(2|4|6|8)|Slope(Up|Down)(Bare)?(2|4|6|8)|Slot(Offset)?(2|4|6|8)|Start(Bare)?2(To(4|6|8))?|Start(Bare)?4(To(2|6|8))?|Start(Bare)?6(To(2|4|8))?|Start(Bare)?8(To(2|4|6))?|StartEdge(Bare)?(2|4|6|8)|Straight(Bare)?2(To(4|6|8))?|Straight(Bare)?4(To(2|6|8))?|Straight(Bare)?6(To(2|4|8))?|Straight(Bare)?8(To(2|4|6))?|Turn((Skew(Bare|Short)?)|Bare)?(2|4|6|8))(?=(\\s|\\*|\\$|!|\\.|\\^|@|~|,(0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|21|22|23)))",
+            "name": "track.4DGolf"
+        },
+        {
+            "match": "^(Cone4|Cones6|Cones8|ConeWall2|ConeWall4|Cube4|Cubinder4|DoubleRotator4|Duocylinder4|Elevator4|Glome6|Horn6|Igloo4|Platform4|PopBumper4|Pyramid8|Shim4|Spherinder4|SpinDisk6|SpinnerLarge4|SpinnerSide4|SpinnersIn4|SpinnersOut4|SpringBoard4|Tetra4|Trirect4|Wedge4|Well6|Windmill2|BlackKnight4|BlackPawn4|Eye4|SpinnerLargeA4|SpinnerLargeB4|Tetrarect4|WhiteKing4|WhiteKnight4|WhitePawn4)",
+            "name": "obstacle.4DGolf"
+        },
+        {
+            "match": "(?<=^#Theme\\s)(Forest4D|Sand4D|Snow4D|Abstract4D|Lava4D|Space4D|Finale5D|Challenge5D|Empty4D)",
+            "name": "leveltype.4DGolf"
+        },
+        {
+            "match": "(?<=^#Music\\s)(Standard|LoFi|Showdown|Void|Relax)",
+            "name":"musictype.4DGolf"
+        }
+    ]
+}

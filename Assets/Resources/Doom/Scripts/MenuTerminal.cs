@@ -5,6 +5,7 @@ using System.IO;
 using System.Text;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SelectionMenuItem {
     public string name;
@@ -68,6 +69,8 @@ public class MenuTerminal : MonoBehaviour {
         SelMove(-1);
     }
 
+    private LevelData levelData;
+
     private float accumulatedScrollDelta = 0.0f, scrollTick = 0.1f;
     void Update() {
         if (Input.GetButtonDown("MenuUp")) {
@@ -98,13 +101,8 @@ public class MenuTerminal : MonoBehaviour {
             Debug.Log("Loading level " + items[selection].filepath);
             SceneManager.LoadScene("Assets/Resources/Doom/Scenes/LevelScene.unity");
             string fp = items[selection].filepath;
-            Debug.Log("fp get");
-            LevelData levelData = MDMFLoader.Load(fp);
-            Debug.Log("ld get");
-            WorldManager.SetLevelData(levelData);
-            Debug.Log("data set");
-            WorldManager.BuildLevelFromData();
-            Debug.Log("level built");
+            levelData = MDMFLoader.Load(fp);
+            GameManager.SetLevelData(levelData);
         }
 
         textmesh.text = GenerateMenuText();

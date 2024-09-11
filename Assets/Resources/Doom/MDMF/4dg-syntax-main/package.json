@@ -1,0 +1,196 @@
+{
+    "name": "4dg-syntax",
+    "displayName": "4DGolf Syntax",
+    "description": "Syntax highlighting support for 4DGolf.",
+    "version": "0.0.1",
+    "publisher": "chrismzz.",
+    "license": "MIT",
+    "readme": "README.md",
+    "icon": "images/icon.png",
+    "author": {
+        "name": "Chris Mzz."
+    },
+    "galleryBanner": {
+        "color": "#2a802a",
+        "theme": "dark"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "keywords": [
+        "4dg",
+        "4d",
+        "golf",
+        "vscode",
+        "language",
+        "highlight",
+        "syntax"
+    ],
+    "engines": {
+        "vscode": "^1.90.0"
+    },
+    "editor.semanticHighlighting.enabled": true,
+    "contributes": {
+        "configurationDefaults": {
+            "editor.tokenColorCustomizations": {
+                "textMateRules": [
+                    {
+                        "scope": "comment2.4DGolf",
+                        "settings": {
+                            "foreground": "#21a8d1"
+                        }
+                    },
+                    {
+                        "scope": "segment.directive.4DGolf",
+                        "settings": {
+                            "foreground": "#ffe600",
+                            "fontStyle": "bold"
+                        }
+                    },
+                    {
+                        "scope": "directive.4DGolf",
+                        "settings": {
+                            "foreground": "#ff9900"
+                        }
+                    },
+                    {
+                        "scope": "tag.4DGolf",
+                        "settings": {
+                            "foreground": "#ba43ff"
+                        }
+                    },
+                    {
+                        "scope": "class.4DGolf",
+                        "settings": {
+                            "foreground": "#00b698"
+                        }
+                    },
+                    {
+                        "scope": "index.vector.4DGolf",
+                        "settings": {
+                            "foreground": "#00d9ff"
+                        }
+                    },
+                    {
+                        "scope": "autofield.4DGolf",
+                        "settings": {
+                            "foreground": "#00d9ff",
+                            "fontStyle": "bold"
+                        }
+                    },
+                    {
+                        "scope": "id.4DGolf",
+                        "settings": {
+                            "foreground": "#00d9ff",
+                            "fontStyle": "bold"
+                        }
+                    },
+                    {
+                        "scope": "param.script.4DGolf",
+                        "settings": {
+                            "foreground": "#00e94e",
+                            "fontStyle": "bold"
+                        }
+                    },
+                    {
+                        "scope": "reserved.script.4DGolf",
+                        "settings": {
+                            "foreground": "#ffbb00",
+                            "fontStyle": "bold"
+                        }
+                    },
+                    {
+                        "scope": "braces.object.4DGolf",
+                        "settings": {
+                            "foreground": "#f834ff"
+                        }
+                    },
+                    {
+                        "scope": "levelname.4DGolf",
+                        "settings": {
+                            "foreground": "#ffffff",
+                            "fontStyle": "underline"
+                        }
+                    },
+                    {
+                        "scope": "metadata.4DGolf",
+                        "settings": {
+                            "foreground": "#5f93ec",
+                            "fontStyle": "bold"
+                        }
+                    },
+                    {
+                        "scope": "musictype.4DGolf",
+                        "settings": {
+                            "foreground": "#ffffff",
+                            "fontStyle": "italic"
+                        }
+                    },
+                    {
+                        "scope": "leveltype.4DGolf",
+                        "settings": {
+                            "foreground": "#ffffff",
+                            "fontStyle": "bold"
+                        }
+                    },
+                    {
+                        "scope": "rotation.4DGolf",
+                        "settings": {
+                            "foreground": "#50c94e",
+                            "fontStyle": "italic"
+                        }
+                    },
+                    {
+                        "scope": "translation.4DGolf",
+                        "settings": {
+                            "foreground": "#d08adb",
+                            "fontStyle": "italic"
+                        }
+                    },
+                    {
+                        "scope": "track.4DGolf",
+                        "settings": {
+                            "foreground": "#d79b83"
+                        }
+                    },
+                    {
+                        "scope": "obstacle.4DGolf",
+                        "settings": {
+                            "foreground": "#e86f29"
+                        }
+                    },
+                    {
+                        "scope": "null.4DGolf",
+                        "settings": {
+                            "foreground": "#c4b368"
+                        }
+                    },
+                    {
+                        "scope": "decorator.4DGolf",
+                        "settings": {
+                            "foreground": "#39e6cf"
+                        }
+                    }
+
+                ]
+            }
+        },
+        "languages": [{
+            "id": "4DGolf",
+            "aliases": [
+                "4D Golf",
+                "4D golf",
+                "4d golf"
+            ],
+            "extensions": [
+                ".4dg"
+            ],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "4DGolf",
+            "scopeName": "source.4DGolf",
+            "path": "./syntaxes/4DGolf.tmLanguage.json"
+        }]
+    }
+}

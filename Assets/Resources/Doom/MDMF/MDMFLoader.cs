@@ -13,7 +13,7 @@ public class MDMFException : System.Exception {
 
 public class ParseException : MDMFException {
     public ParseException() {}
-    public ParseException(string message, int line) : base("Parse error at line " + line.ToString() + ":" + message) {}
+    public ParseException(string message, int line) : base("Parse error at line " + line.ToString() + ": " + message) {}
     public ParseException(string message, System.Exception inner) : base(message, inner) {}
 }
 
@@ -40,9 +40,14 @@ public enum FieldTag {
     TriggerForwardOnly,
 }
 
-public struct Autofield {
+public class Autofield {
     public Dictionary<System.Type,object> Fields;
     public List<FieldTag> Tags;
+
+    public Autofield() {
+        Fields = new Dictionary<System.Type, object>();
+        Tags = new List<FieldTag>();
+    }
 }
 
 public class SectorBoundary {
@@ -170,6 +175,8 @@ public class Script {
                 ScriptManager.RunScript(args);
                 return;
             }
+            default:
+                throw new ScriptExecutionException("Script " + SectorId + " line " + eip + ": Unknown command ('" + instr.Tokens[0] + "')");
         }
     }
 }
@@ -300,7 +307,7 @@ public class MDMFLoader : MonoBehaviour {
         string processedLine = line;
         processedLine = Regex.Replace(processedLine, "{:", "??1", RegexOptions.CultureInvariant);
         processedLine = Regex.Replace(processedLine, ":}", "??2", RegexOptions.CultureInvariant);
-        processedLine = Regex.Replace(processedLine, "([,{}[\\]<>:%$])", "  \\1 ", RegexOptions.CultureInvariant);
+        processedLine = Regex.Replace(processedLine, "([,{}[\\]<>:%$])", "  $1 ", RegexOptions.CultureInvariant);
         processedLine = Regex.Replace(processedLine, "\\?\\?1", "{:", RegexOptions.CultureInvariant);
         processedLine = Regex.Replace(processedLine, "\\?\\?2", ":}", RegexOptions.CultureInvariant);
         return processedLine;
@@ -319,6 +326,17 @@ public class MDMFLoader : MonoBehaviour {
         return new List<string>(processedLine.Split());
     }
 
+    public static System.Type FindType(string typeName, int ln) { // We search all default namespaces and assemblies, as well as UnityEngine.
+        System.Type _type = Type.GetType(typeName);
+        if (_type is null) {
+            _type = typeof(Vector3).Assembly.GetType("UnityEngine." + typeName);
+        }
+        if (_type is null) {
+            throw new ParseException("Could not identify type '" + typeName + "'. It might be hidden in a namespace or a different assembly.", ln);
+        }
+        return _type;
+    }
+
     public static YieldObject MDMFGetObject(List<string> _obj, int objSt, int ln) {
         YieldObject yield = new YieldObject();
         bool _ObjectFactory = false;
@@ -331,7 +349,7 @@ public class MDMFLoader : MonoBehaviour {
         bool _IdentifierFactory = false;
         bool _DoubleFactory = false;
         try { if (_obj[objSt + 0] == "[" && Regex.Match(_obj[objSt + 1], "^[A-Za-z_][0-9A-Za-z_]*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant).Success && _obj[objSt + 2] == "]" && _obj[objSt + 3] == "{") _ObjectFactory = true; } catch (IndexOutOfRangeException ignored) {} if (_ObjectFactory) {
-            System.Type _type = Type.GetType(_obj[objSt + 1]);
+            System.Type _type = FindType(_obj[objSt + 1], ln);
             int _objSt = objSt + 3;
             if (StrictParse && _obj[_objSt] != "{") {
                 if (_objSt >= _obj.Count) {
@@ -364,7 +382,7 @@ public class MDMFLoader : MonoBehaviour {
             }
             return yield;
         } else try { if (_obj[objSt + 0] == "[" && Regex.Match(_obj[objSt + 1], "^[A-Za-z_][0-9A-Za-z_]*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant).Success && _obj[objSt + 2] == "]" && _obj[objSt + 3] == "[") _ListFactory = true; } catch (IndexOutOfRangeException ignored) {} if (_ListFactory) {
-            System.Type _type = Type.GetType(_obj[objSt + 1]);
+            System.Type _type = FindType(_obj[objSt + 1], ln);
             int _objSt = objSt + 3;
             if (StrictParse && _obj[_objSt] != "[") {
                 if (_objSt >= _obj.Count) {
@@ -453,7 +471,7 @@ public class MDMFLoader : MonoBehaviour {
     public static void ParseMDMFSegment(int segSt) {
         string segmentType = file[segSt].Split()[1];
         switch (segmentType) {
-            case "Defines": {
+            case "[Defines]": {
                 for (int i = segSt + 1;; i++) {
                     if (i >= file.Count) {
                         if (StrictParse) {
@@ -484,7 +502,7 @@ public class MDMFLoader : MonoBehaviour {
                 }
                 break;
             }
-            case "Scripts": {
+            case "[Scripts]": {
                 for (int i = segSt + 1;;) {
                     if (i >= file.Count) {
                         if (StrictParse) {
@@ -505,9 +523,11 @@ public class MDMFLoader : MonoBehaviour {
                     }
                     Script script = new Script(int.Parse(line[0].Substring(1)));
                     script.Contents = new List<ScriptInstruction>();
+                    i++;
                     for (;;i++) {
                         line = MDMFLinePreprocess(file[i]);
                         if (line[0] == "end") {
+                            script.Contents.Add(new ScriptInstruction(line));
                             break;
                         } else if (line[0] == "#Segment") {
                             throw new ParseException("Unexpected segment delimiter: Expected script delimiter ('end'), got '#Segment'", i);
@@ -515,11 +535,12 @@ public class MDMFLoader : MonoBehaviour {
                             script.Contents.Add(new ScriptInstruction(line));
                         }
                     }
-                    ScriptManager.allScripts.Add(script.SectorId, script);
+                    i++;
+                    //ScriptManager.allScripts.Add(script.SectorId, script);
                 }
                 break;
             }
-            case "Lines": {
+            case "[Lines]": {
                 for (int i = segSt + 1;; i++) {
                     if (i >= file.Count) {
                         if (StrictParse) {
@@ -542,7 +563,7 @@ public class MDMFLoader : MonoBehaviour {
                 }
                 break;
             }
-            case "Sectors": {
+            case "[Sectors]": {
                 for (int i = segSt + 1;; i++) {
                     if (i >= file.Count) {
                         if (StrictParse) {
